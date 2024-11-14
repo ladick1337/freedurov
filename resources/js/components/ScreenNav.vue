@@ -52,6 +52,7 @@ export default {
         display: flex;
         height: 10%;
         width: 100%;
+        z-index: 1;
     }
     .screen-nav__item{
         width: 25%;

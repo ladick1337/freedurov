@@ -11,7 +11,7 @@
 export default {
     name: 'Finance',
     mounted() {
-        this.initPlayer();
+        // this.initPlayer();
     },
     methods: {
         initPlayer() {

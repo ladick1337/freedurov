@@ -48,6 +48,7 @@ export default {
         left: 0;
         right: 0;
         padding: 20px;
+        z-index: 1;
     }
     .header-btn{
         height: 8vh;

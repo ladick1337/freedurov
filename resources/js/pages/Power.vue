@@ -11,7 +11,7 @@
 export default {
   name: 'Power',
   mounted(){
-      this.initPlayer()
+      // this.initPlayer()
   },
   methods: {
       initPlayer(){

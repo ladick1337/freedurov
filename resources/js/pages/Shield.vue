@@ -11,7 +11,7 @@
 export default {
     name: 'Shield',
     mounted() {
-        this.initPlayer();
+        // this.initPlayer();
     },
     methods: {
         initPlayer() {
@@ -38,9 +38,6 @@ export default {
                     padBottom: "0%",
                     transitionTime: 0 // Отключаем плавные переходы
                 },
-
-                // Параметры анимации
-                animation: 'idle',  // Начальная анимация
 
                 success: (loadedPlayer) => {
                     console.log("Animation loaded successfully");
