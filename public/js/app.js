@@ -22673,7 +22673,7 @@ __webpack_require__.r(__webpack_exports__);
           playerContainer.addEventListener('click', function () {
             self.$emit('tap');
             // При клике запускаем анимацию "baloon_pump"
-            if (!isPumping) {
+            if (!isAnimating) {
               var pumpAnimation = loadedPlayer.setAnimation("action_smile", false);
               pumpAnimation.timeScale = 3.0;
               isAnimating = true;

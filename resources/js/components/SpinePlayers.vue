@@ -58,15 +58,12 @@ export default {
                 },
                 success: (loadedPlayer) => {
                     console.log("Animation loaded successfully");
-
                     const playerContainer = document.getElementById("player-power");
-
                     let isAnimating = false;
-
                     playerContainer.addEventListener('click', function() {
                         self.$emit('tap');
                         // При клике запускаем анимацию "baloon_pump"
-                        if(!isPumping){
+                        if(!isAnimating){
                             const pumpAnimation = loadedPlayer.setAnimation("action_smile", false);
                             pumpAnimation.timeScale = 3.0;
                             isAnimating = true;
