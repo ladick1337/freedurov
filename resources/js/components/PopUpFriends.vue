@@ -48,7 +48,7 @@
                     <img class="pop-up__friends__copy-btn" src="/images/pop-ups/friends/copy-btn.svg" alt="">
                 </div>
             </div>
-            <div class="pop-up__friends__menu-btn">
+            <div class="pop-up__friends__menu-btn" @click="showPopUpLang">
                 <img class="pop-up__friends__menu-btn__img" src="/images/btns/header-lock.svg" alt="">
                 <div class="pop-up__friends__menu-btn__text">
                     Меню <br> пользователя
@@ -73,6 +73,9 @@ export default {
         showPopUp(){
             document.querySelector('.pop-up__friends').style.display = "block";
         },
+        showPopUpLang(){
+            this.$emit('showPopUpLang');
+        }
     },
     mounted() {
         document.querySelector('.pop-up__friends__bg').addEventListener('click', () => {

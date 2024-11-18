@@ -1,7 +1,8 @@
 <template>
     <div class="screen">
         <!-- Используем v-show для скрытия и показа элементов в зависимости от currentPlayer -->
-        <div id="player-power" v-show="this.$route.name == 'power'"></div>
+        <div id="player-power" v-show="this.$route.name == 'power' && this.selectedLanguage == 'en'"></div>
+        <div id="player-power-ru" v-show="this.$route.name == 'power' && this.selectedLanguage == 'ru'"></div>
         <div id="player-shield" v-show="this.$route.name == 'shield'"></div>
         <div id="player-ton" v-show="this.$route.name == 'finance'"></div>
     </div>
@@ -9,8 +10,17 @@
 
 <script>
 export default {
+    data(){
+        return{
+            language: 'ru'
+        }
+    },
     props: {
         currentPlayer: {
+            type: String,
+            required: true
+        },
+        selectedLanguage: {
             type: String,
             required: true
         }
@@ -22,6 +32,7 @@ export default {
     },
     methods: {
         initPlayers() {
+            let self = this;
             // Инициализация плеера Power
             new spine.SpinePlayer("player-power", {
                 jsonUrl: '/animations/Scene_Macron/main_scene2.json',
@@ -47,22 +58,77 @@ export default {
                 },
                 success: (loadedPlayer) => {
                     console.log("Animation loaded successfully");
-                    console.log(loadedPlayer);
-                    console.log(window.innerWidth);
-                    console.log(window.innerHeight);
+
                     const playerContainer = document.getElementById("player-power");
+
+                    let isAnimating = false;
+
                     playerContainer.addEventListener('click', function() {
-                        // При клике запускаем анимацию "action_smile"
-                        const actionSmileAnimation = loadedPlayer.setAnimation("action_smile", false);
-                        actionSmileAnimation.timeScale = 2.0;
+                        self.$emit('tap');
+                        // При клике запускаем анимацию "baloon_pump"
+                        if(!isPumping){
+                            const pumpAnimation = loadedPlayer.setAnimation("action_smile", false);
+                            pumpAnimation.timeScale = 3.0;
+                            isAnimating = true;
+                        }
                     });
-                    // Добавляем слушатель завершения анимации
+
                     loadedPlayer.animationState.addListener({
                         complete: function (trackEntry) {
                         // Если анимация завершена, переключаемся на idle
                         if (trackEntry.animation.name === 'action_smile') {
                             loadedPlayer.setAnimation("idle", true);
+                            isAnimating = false;
+                        }
+                        }
+                    });
+                }
+            });
 
+            // Инициализация плеера Power-ru
+            new spine.SpinePlayer("player-power-ru", {
+                jsonUrl: '/animations/Scene_Baloon/bg.json',
+                atlasUrl: '/animations/Scene_Baloon/bg.atlas',
+                pngUrl: '/animations/Scene_Baloon/bg.png',
+                width: window.innerWidth,  // Исходная ширина
+                height: window.innerHeight, // Исходная высота
+                alpha: true,
+                backgroundColor: "#000000",
+                showControls: false,
+                showLoading: false,
+                animation: "Idle",
+                viewport: {
+                    x: -700,         // Позиция по оси X
+                    y: -1600,         // Позиция по оси Y
+                    width: 2400,   // Ширина видимой области
+                    height: 1900,  // Высота видимой области
+                    padLeft: "0%", // Без отступов
+                    padRight: "0%",
+                    padTop: "0%",
+                    padBottom: "0%",
+                    transitionTime: 0 // Отключаем плавные переходы
+                },
+                success: (loadedPlayer) => {
+                    console.log("Animation loaded successfully");
+                    console.log(loadedPlayer);
+                    let isPumping = false;
+                    const playerContainer = document.getElementById("player-power-ru");
+                    playerContainer.addEventListener('click', function() {
+                        self.$emit('tap');
+                        // При клике запускаем анимацию "baloon_pump"
+                        if(!isPumping){
+                            const pumpAnimation = loadedPlayer.setAnimation("baloon_pump", false);
+                            pumpAnimation.timeScale = 3.0;
+                            isPumping = true;
+                        }
+                    });
+                    // Добавляем слушатель завершения анимации
+                    loadedPlayer.animationState.addListener({
+                        complete: function (trackEntry) {
+                        // Если анимация завершена, переключаемся на idle
+                        if (trackEntry.animation.name === 'baloon_pump') {
+                            loadedPlayer.setAnimation("Idle", true);
+                            isPumping = false;
                         }
                         }
                     });
@@ -101,7 +167,7 @@ export default {
                     let currentAnimationName = "none";
 
                     playerContainer.addEventListener('click', function() {
-                        console.log('click')
+                        self.$emit('tap');
                         if (currentAnimationName === "idle") {
                             // Если щит статичен (idle), запускаем анимацию idle
 
@@ -177,6 +243,7 @@ export default {
                     console.log(loadedPlayer)
                     const playerContainer = document.getElementById("player-ton");
                     playerContainer.addEventListener('click', function() {
+                        self.$emit('tap');
                         // Запуск анимации "hit" при клике
                         const actionSmileAnimation = loadedPlayer.setAnimation("animation", false);
                         actionSmileAnimation.timeScale = 2.0;
@@ -206,7 +273,7 @@ export default {
 </style>
 
 <style>
-#player-power, #player-shield, #player-ton {
+#player-power, #player-power-ru, #player-shield, #player-ton {
     display: flex;
     justify-content: center;
     align-items: center;

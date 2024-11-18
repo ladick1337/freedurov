@@ -1,15 +1,15 @@
 <template>
     <div class="header">
         <div class="header-btn">
-            <img class="header-btn__img" src="/images/btns/header-lock.svg" alt="">
+            <img class="header-btn__img" src="/images/btns/header-lock.svg" alt="" @click="showPopUpLang">
         </div>
         <div class="header-progress">
             <div class="header-progress-bar__wrapper">
                 <div class="header-progress-bar__filler"></div>
             </div>
             <div class="header-progress__next-step">
-                <div class="header-progress__next-step__text">
-                    LV <span class="yellow">{{this.lvl}}</span> > LV <span class="green">{{this.lvl+1 }} + 20 000</span>
+                <div class="header-progress__next-step__text" @click="tap()">
+                    LV <span class="yellow">{{this.selectedProgress.currentLvl}}</span> > LV <span class="green">{{this.selectedProgress.currentLvl+1 }} + {{this.selectedProgress.nextLvlReward}}</span>
                 </div>
             </div>
         </div>
@@ -17,7 +17,7 @@
             <img class="header-btn__img" src="/images/btns/header-boost.svg" alt="">
         </div>
         <div class="header-points">
-            20 780
+            {{this.points}}
         </div>
     </div>
 </template>
@@ -27,12 +27,84 @@ export default {
     name: 'Header',
     data(){
         return{
-            lvl: 1,
-            power: {
-                currentLvl: 1,
-                nextLvlReward: 20000,
+            selectedProgress:{},
+            points: 20780,
+
+            progress: {
+                power: {
+                    currentLvl: 1,
+                    nextLvlReward: 20000,
+                    taps: 10,
+                    tapsToNextLvl: 50,
+                },
+                shield: {
+                    currentLvl: 5,
+                    nextLvlReward: 20000,
+                    taps: 66,
+                    tapsToNextLvl: 100,
+                },
+                finance: {
+                    currentLvl: 10,
+                    nextLvlReward: 20000,
+                    taps: 4,
+                    tapsToNextLvl: 200
+                },
+                
             }
         }
+    },
+    mounted(){
+        this.updateSelectedProgress(this.$route.name);
+    },
+    watch: {
+        $route(to) {
+            console.log(to);
+            // console.log('route '+ this.currentPlayer);
+            this.updateSelectedProgress(to.name);
+            
+        }
+    },
+    methods: {
+        updateSelectedProgress(routeName){
+            switch (routeName) {
+                case 'power':
+                    this.selectedProgress = this.progress.power;
+                    break;
+                case 'finance':
+                    this.selectedProgress = this.progress.finance;
+                    break;
+                case 'shield':
+                    this.selectedProgress = this.progress.shield;
+                    break;
+                default:
+                    this.selectedProgress = {
+                        currentLvl: 1,
+                        nextLvlReward: 20000,
+                        taps: 0,
+                        tapsToNextLvl: 10
+                    };
+            }
+            this.fillProgressBar()
+        },
+        fillProgressBar(){
+            let currentTaps = this.selectedProgress.taps;
+            let requiredTaps = this.selectedProgress.tapsToNextLvl;
+            document.querySelector('.header-progress-bar__filler').style.width = currentTaps/requiredTaps*100 + '%';
+        },
+        tap(){
+            this.selectedProgress.taps++;
+            this.points++;
+            if(this.selectedProgress.taps == this.selectedProgress.tapsToNextLvl){
+                this.selectedProgress.currentLvl++;
+                this.selectedProgress.taps = 0;
+                this.points += this.selectedProgress.nextLvlReward;
+            }
+            this.fillProgressBar();
+        },
+        showPopUpLang(){
+            this.$emit('showPopUpLang');
+        }
+
     }
 }
 </script>

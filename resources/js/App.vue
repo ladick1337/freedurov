@@ -1,16 +1,21 @@
 <template>
     <!-- <router-view></router-view> -->
-    <Header/>
+    <Header @showPopUpLang="showPopUpLang" ref="Header"/>
     <ScreenButtons
         @showPopUpFriends="showPopUpFriends"
         @showPopUpBoost="showPopUpBoost"
         @showPopUpEarn="showPopUpEarn" />
     <ScreenNav/>
-    <PopUpFriends ref="PopUpFriends"/>
+    <PopUpFriends @showPopUpLang="showPopUpLang" ref="PopUpFriends"/>
     <PopUpBoost ref="PopUpBoost"/>
     <PopUpEarn ref="PopUpEarn"/>
+    <PopUpSelectLang 
+        @toggleLang="toggleLang"
+        :selectedLanguage="this.selectedLanguage" ref="PopUpSelectLang"/>
 
-    <SpinePlayers :currentPlayer="currentPlayer" />
+    <SpinePlayers
+        :selectedLanguage="selectedLanguage"
+        :currentPlayer="currentPlayer" @tap="tap"/>
 </template>
 
 <script>
@@ -20,6 +25,7 @@ import ScreenButtons from './components/ScreenButtons.vue';
 import PopUpFriends from './components/PopUpFriends.vue';
 import PopUpBoost from './components/PopUpBoost.vue';
 import PopUpEarn from './components/PopUpEarn.vue';
+import PopUpSelectLang from './components/PopUpSelectLang.vue';
 import SpinePlayers from './components/SpinePlayers.vue';
 
 export default {
@@ -30,11 +36,13 @@ export default {
         PopUpFriends,
         PopUpBoost,
         PopUpEarn,
+        PopUpSelectLang,
         SpinePlayers
     },
     data() {
         return {
-            currentPlayer: 'power'  // Начальный экран
+            currentPlayer: 'power' , // Начальный экран
+            selectedLanguage: 'ru',
         };
     },
     watch: {
@@ -60,6 +68,16 @@ export default {
         },
         showPopUpEarn() {
             this.$refs.PopUpEarn.showPopUp();
+        },
+        tap(){
+            this.$refs.Header.tap();
+        },
+        toggleLang(value){
+            this.selectedLanguage = value;
+        },
+        showPopUpLang(){
+            this.$refs.PopUpFriends.closePopUp();
+            this.$refs.PopUpSelectLang.showPopUp();
         }
     }
 };
