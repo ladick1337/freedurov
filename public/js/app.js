@@ -22820,9 +22820,9 @@ __webpack_require__.r(__webpack_exports__);
 
       // Инициализация плеера Finance
       new spine.SpinePlayer("player-ton", {
-        jsonUrl: '/animations/Scene_TON/scene_05.json',
-        atlasUrl: '/animations/Scene_TON/scene_05.atlas',
-        pngUrl: '/animations/Scene_TON/scene_05.png',
+        jsonUrl: '/animations/Scene_TON_02/scene_05.json',
+        atlasUrl: '/animations/Scene_TON_02/scene_05.atlas',
+        pngUrl: '/animations/Scene_TON_02/scene_05.png',
         width: window.innerWidth,
         // Исходная ширина
         height: window.innerHeight,
@@ -22831,7 +22831,7 @@ __webpack_require__.r(__webpack_exports__);
         backgroundColor: "#000000",
         showControls: false,
         showLoading: false,
-        animation: "animation",
+        animation: "idle",
         // Начальная анимация
         loop: false,
         // Глобальная настройка viewport
@@ -22855,20 +22855,25 @@ __webpack_require__.r(__webpack_exports__);
           console.log("Animation loaded successfully");
           console.log(loadedPlayer);
           var playerContainer = document.getElementById("player-ton");
+          var isAnimating = false;
           playerContainer.addEventListener('click', function () {
             self.$emit('tap');
-            // Запуск анимации "hit" при клике
-            var actionSmileAnimation = loadedPlayer.setAnimation("animation", false);
-            actionSmileAnimation.timeScale = 2.0;
+            // При клике запускаем анимацию "baloon_pump"
+            if (!isAnimating) {
+              var clickAnimation = loadedPlayer.setAnimation("action", false);
+              clickAnimation.timeScale = 3.0;
+              isAnimating = true;
+            }
           });
-          // // Слушатель для возврата к анимации idle после завершения
-          // loadedPlayer.animationState.addListener({
-          //     complete: function(trackEntry) {
-          //         if (trackEntry.animation.name === 'hit') {
-          //             loadedPlayer.setAnimation("animation", true);
-          //         }
-          //     }
-          // });
+          loadedPlayer.animationState.addListener({
+            complete: function complete(trackEntry) {
+              // Если анимация завершена, переключаемся на idle
+              if (trackEntry.animation.name === 'action') {
+                loadedPlayer.setAnimation("idle", true);
+                isAnimating = false;
+              }
+            }
+          });
         }
       });
     }
