@@ -233,6 +233,14 @@ export default {
     }
 </style>
 
+<style scoped>
+    @media (min-width: 500px) {
+        .pop-up__select-lang__frame{
+           width: 500px;
+        }
+    }
+</style>
+
 
 
 

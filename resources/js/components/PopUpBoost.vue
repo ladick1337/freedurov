@@ -57,6 +57,10 @@
                         </div>
                     </div>
                     <img class="pop-up__boost__item__btn" src="/images/pop-ups/boost/play.svg" alt="">
+
+                    <div class="pop-up__boost__item__paper-container">
+                        <img class="pop-up__boost__item__paper-img" src="/images/pop-ups/friends/item-bg.png" alt="">
+                    </div>
                 </div>
 
                 <div class="pop-up__boost__item">
@@ -73,6 +77,10 @@
                         </div>
                     </div>
                     <img class="pop-up__boost__item__btn" src="/images/pop-ups/boost/play.svg" alt="">
+
+                    <div class="pop-up__boost__item__paper-container">
+                        <img class="pop-up__boost__item__paper-img" src="/images/pop-ups/friends/item-bg.png" alt="">
+                    </div>
                 </div>
 
                 <div class="pop-up__boost__item">
@@ -89,6 +97,10 @@
                         </div>
                     </div>
                     <img class="pop-up__boost__item__btn" src="/images/pop-ups/boost/play.svg" alt="">
+
+                    <div class="pop-up__boost__item__paper-container">
+                        <img class="pop-up__boost__item__paper-img" src="/images/pop-ups/friends/item-bg.png" alt="">
+                    </div>
                 </div>
 
                 
@@ -218,8 +230,9 @@ export default {
     }
 
     .pop-up__boost__item{
-        background-image: url("/images/pop-ups/friends/item-bg.svg");
-        background-size: 100%;
+        /* background-image: url("/images/pop-ups/friends/item-bg.svg");
+        background-size: 100%; */
+        position: relative;
         /* background-position: center center; */
         width: 100%;
         height: 100px;
@@ -339,6 +352,32 @@ export default {
         font-size: 0.7em;
         font-weight: 600;
         color: rgba(252, 255, 198, 1);
+    }
+</style>
+
+<style scoped>
+    .pop-up__boost__item__paper-container {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -1;
+    }
+
+    .pop-up__boost__item__paper-container .pop-up__boost__item__paper-img {
+        width: 100%; /* Растягиваем по ширине */
+        height: 100%; /* Растягиваем по высоте */
+    }   
+</style>
+
+<style scoped>
+    @media (min-width: 768px) {
+        .pop-up__boost__frame{
+           width: 768px;
+        }
     }
 </style>
 

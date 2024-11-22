@@ -25,6 +25,10 @@
                             <span class="pop-up__friends__invite-item__content-text__span">2500</span> для тебя и твоего друга
                         </div>
                     </div>
+
+                    <div class="pop-up__friends__invite-item__paper-container">
+                        <img class="pop-up__friends__invite-item__paper-img" src="/images/pop-ups/friends/item-bg.png" alt="">
+                    </div>
                 </div>
                 <div class="pop-up__friends__invite-item">
                     <div class="pop-up__friends__invite-item__img">
@@ -39,6 +43,10 @@
                             <span class="pop-up__friends__invite-item__content-text__span">5000</span> для тебя и твоего друга
                         </div>
                     </div>
+
+                    <div class="pop-up__friends__invite-item__paper-container">
+                        <img class="pop-up__friends__invite-item__paper-img" src="/images/pop-ups/friends/item-bg.png" alt="">
+                    </div>
                 </div>
 
                 <div class="pop-up__friends__btns">
@@ -46,6 +54,11 @@
                         Пригласить друга
                     </div>
                     <img class="pop-up__friends__copy-btn" src="/images/pop-ups/friends/copy-btn.svg" alt="">
+                </div>
+
+
+                <div class="pop-up__friends__invite-list__paper-container">
+                    <img class="pop-up__friends__invite-list__paper-img" src="/images/pop-ups/friends/list-bg.png" alt="">
                 </div>
             </div>
             <div class="pop-up__friends__menu-btn" @click="showPopUpLang">
@@ -164,16 +177,18 @@ export default {
     }
 
     .pop-up__friends__invite-list{
-        background-image: url("/images/pop-ups/friends/list-bg.svg");
-        background-size: 100% 100%;
+        /* background-image: url("/images/pop-ups/friends/list-bg.svg");
+        background-size: 100% 100%; */
+        position: relative;
         padding: 25px;
         width: 100%;
         height: 320px;
     }
 
     .pop-up__friends__invite-item{
-        background-image: url("/images/pop-ups/friends/item-bg.svg");
-        background-size: 100% 100%;
+        /* background-image: url("/images/pop-ups/friends/item-bg.svg");
+        background-size: 100% 100%; */
+        position: relative;
         width: 100%;
         height: 100px;
         display: flex;
@@ -302,5 +317,49 @@ export default {
 
 
 
+    }
+</style>
+
+<style scoped>
+    .pop-up__friends__invite-list__paper-container {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -2;
+    }
+
+    .pop-up__friends__invite-list__paper-container .pop-up__friends__invite-list__paper-img {
+        width: 100%; /* Растягиваем по ширине */
+        height: 100%; /* Растягиваем по высоте */
+    }   
+</style>
+
+<style scoped>
+    .pop-up__friends__invite-item__paper-container {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -1;
+    }
+
+    .pop-up__friends__invite-item__paper-container .pop-up__friends__invite-item__paper-img {
+        width: 100%; /* Растягиваем по ширине */
+        height: 100%; /* Растягиваем по высоте */
+    }   
+</style>
+
+<style scoped>
+    @media (min-width: 500px) {
+        .pop-up__friends__frame{
+           width: 500px;
+        }
     }
 </style>

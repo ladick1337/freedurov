@@ -51,6 +51,11 @@
                     <div class="pop-up__earn__item__btn">
                         GO
                     </div>
+
+
+                    <div class="pop-up__earn__item__paper-container">
+                        <img class="pop-up__earn__item__paper-img" src="/images/pop-ups/friends/item-bg.png" alt="">
+                    </div>
                 </div>
 
                 
@@ -217,9 +222,10 @@ export default {
     }
 
     .pop-up__earn__item{
-        background-image: url("/images/pop-ups/friends/item-bg.svg");
-        background-size: 100%;
+        /* background-image: url("/images/pop-ups/friends/item-bg.svg");
+        background-size: 100%; */
         /* background-position: center center; */
+        position: relative;
         width: 100%;
         height: 100px;
         display: flex;
@@ -313,5 +319,35 @@ export default {
     }
 </style>
 
+<style scoped>
+    .pop-up__earn__item__paper-container {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -1;
+    }
+
+    .pop-up__earn__item__paper-container .pop-up__earn__item__paper-img {
+        width: 100%; /* Растягиваем по ширине */
+        height: 100%; /* Растягиваем по высоте */
+    }   
+</style>
+
+<style scoped>
+    @media (min-width: 600px) {
+        .pop-up__earn__item{
+            padding: 20px 40px;
+        }
+    }
+    @media (min-width: 768px) {
+        .pop-up__earn__frame{
+           width: 768px;
+        }
+    }
+</style>
 
 

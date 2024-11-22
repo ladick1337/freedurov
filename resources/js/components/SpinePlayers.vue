@@ -171,11 +171,11 @@ export default {
 
                             // loadedPlayer.setAnimation("idle", false); 
 
-                            const actionIdleAnimation = loadedPlayer.setAnimation("idle", false);
-                            actionIdleAnimation.timeScale = 1.5;
+                            // const actionIdleAnimation = loadedPlayer.setAnimation("idle", false);
+                            // actionIdleAnimation.timeScale = 1.5;
 
 
-                            currentAnimationName = "idle"; // Обновляем состояние
+                            // currentAnimationName = "idle"; // Обновляем состояние
                         }
                         if (currentAnimationName === "none") {
                             // Если щит статичен (none), запускаем анимацию hit
@@ -199,6 +199,10 @@ export default {
 
 
                                 currentAnimationName = "idle"; // Обновляем состояние на idle
+                                setTimeout(() => {
+                                    const actionIdleAnimation = loadedPlayer.setAnimation("idle", false);
+                                    actionIdleAnimation.timeScale = 100;
+                                }, 2000);
                             }
                             if (trackEntry.animation.name === 'idle') {
                                 // После завершения "idle" запускаем "none"
