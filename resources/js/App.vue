@@ -1,6 +1,8 @@
 <template>
     <!-- <router-view></router-view> -->
-    <Header @showPopUpLang="showPopUpLang" ref="Header"/>
+    <Header @showPopUpLang="showPopUpLang"
+            @showLvlUp="showLvlUp"
+            ref="Header"/>
     <ScreenButtons
         @showPopUpFriends="showPopUpFriends"
         @showPopUpBoost="showPopUpBoost"
@@ -15,7 +17,9 @@
 
     <SpinePlayers
         :selectedLanguage="selectedLanguage"
-        :currentPlayer="currentPlayer" @tap="tap"/>
+        :currentPlayer="currentPlayer" 
+        @tap="tap"
+        ref="SpinePlayers"/>
 </template>
 
 <script>
@@ -78,6 +82,9 @@ export default {
         showPopUpLang(){
             this.$refs.PopUpFriends.closePopUp();
             this.$refs.PopUpSelectLang.showPopUp();
+        },
+        showLvlUp(){
+            this.$refs.SpinePlayers.showLvlUpAnim();
         }
     }
 };

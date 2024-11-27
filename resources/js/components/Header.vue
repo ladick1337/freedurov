@@ -98,6 +98,7 @@ export default {
                 this.selectedProgress.currentLvl++;
                 this.selectedProgress.taps = 0;
                 this.points += this.selectedProgress.nextLvlReward;
+                this.$emit('showLvlUp');
             }
             this.fillProgressBar();
         },

@@ -22265,6 +22265,9 @@ __webpack_require__.r(__webpack_exports__);
     showPopUpLang: function showPopUpLang() {
       this.$refs.PopUpFriends.closePopUp();
       this.$refs.PopUpSelectLang.showPopUp();
+    },
+    showLvlUp: function showLvlUp() {
+      this.$refs.SpinePlayers.showLvlUpAnim();
     }
   }
 });
@@ -22354,6 +22357,7 @@ __webpack_require__.r(__webpack_exports__);
         this.selectedProgress.currentLvl++;
         this.selectedProgress.taps = 0;
         this.points += this.selectedProgress.nextLvlReward;
+        this.$emit('showLvlUp');
       }
       this.fillProgressBar();
     },
@@ -22615,7 +22619,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      language: 'ru'
+      language: 'ru',
+      showLvlUp: false,
+      lvlUpPlayer: {}
     };
   },
   props: {
@@ -22881,6 +22887,91 @@ __webpack_require__.r(__webpack_exports__);
           });
         }
       });
+      new spine.SpinePlayer("player-level", {
+        jsonUrl: '/animations/Animation_level/main_all.json',
+        atlasUrl: '/animations/Animation_level/main_all.atlas',
+        pngUrl: '/animations/Animation_level/main_all.png',
+        width: window.innerWidth,
+        // Исходная ширина
+        height: window.innerHeight,
+        // Исходная высота
+        alpha: true,
+        backgroundColor: "#00000000",
+        showControls: false,
+        showLoading: false,
+        animation: "animation",
+        // Начальная анимация
+        loop: false,
+        // Глобальная настройка viewport
+        // viewport: {
+        //     x: -378/2,         // Позиция по оси X
+        //     y: -656*2,         // Позиция по оси Y
+        //     width: 378*2,   // Ширина видимой области
+        //     height: 656*2,  // Высота видимой области
+        //     // padLeft: "30%", // Без отступов
+        //     // padRight: "30%",
+        //     // padTop: "-50%",
+        //     // padBottom: "-50%",
+        //     transitionTime: 0 // Отключаем плавные переходы
+        // },
+        viewport: {
+          width: 378 * 2,
+          // Ширина текстуры из атласа
+          height: 656 * 2,
+          // Высота текстуры из атласа
+          transitionTime: 0,
+          // Без анимации переходов
+          padLeft: "100%",
+          padRight: "100%",
+          padTop: "85%",
+          padBottom: "100%"
+        },
+        success: function success(loadedPlayer) {
+          self.lvlUpPlayer = loadedPlayer;
+          console.log("lvlUpAnimation loaded successfully");
+          console.log(self.lvlUpPlayer);
+          var playerContainer = document.getElementById("player-level");
+          var isAnimating = false;
+          playerContainer.addEventListener('click', function () {
+            self.$emit('tap');
+            // При клике запускаем анимацию "baloon_pump"
+            if (!isAnimating) {
+              var clickAnimation = loadedPlayer.setAnimation("animation", false);
+              clickAnimation.timeScale = 1.5;
+              isAnimating = true;
+            }
+          });
+          loadedPlayer.animationState.addListener({
+            complete: function complete(trackEntry) {
+              // Если анимация завершена, переключаемся на idle
+              if (trackEntry.animation.name === 'animation') {
+                // loadedPlayer.setAnimation("idle", true);
+                isAnimating = false;
+                self.hideLvlUpAnim();
+              }
+            }
+          });
+        }
+      });
+    },
+    showLvlUpAnim: function showLvlUpAnim() {
+      var self = this;
+      this.showLvlUp = true;
+      document.querySelector('#player-level').style.zIndex = "1";
+      var clickAnimation = this.lvlUpPlayer.setAnimation("animation", false);
+      clickAnimation.timeScale = 1.5;
+      this.lvlUpPlayer.animationState.addListener({
+        complete: function complete(trackEntry) {
+          // Если анимация завершена, переключаемся на idle
+          if (trackEntry.animation.name === 'animation') {
+            self.hideLvlUpAnim();
+          }
+        }
+      });
+    },
+    hideLvlUpAnim: function hideLvlUpAnim() {
+      this.showLvlUp = false;
+      document.querySelector('#player-level').style.zIndex = "-2";
     }
   }
 });
@@ -23204,8 +23295,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_SpinePlayers = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("SpinePlayers");
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <router-view></router-view> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Header, {
     onShowPopUpLang: $options.showPopUpLang,
+    onShowLvlUp: $options.showLvlUp,
     ref: "Header"
-  }, null, 8 /* PROPS */, ["onShowPopUpLang"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_ScreenButtons, {
+  }, null, 8 /* PROPS */, ["onShowPopUpLang", "onShowLvlUp"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_ScreenButtons, {
     onShowPopUpFriends: $options.showPopUpFriends,
     onShowPopUpBoost: $options.showPopUpBoost,
     onShowPopUpEarn: $options.showPopUpEarn
@@ -23223,7 +23315,8 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   }, null, 8 /* PROPS */, ["onToggleLang", "selectedLanguage"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_SpinePlayers, {
     selectedLanguage: $data.selectedLanguage,
     currentPlayer: $data.currentPlayer,
-    onTap: $options.tap
+    onTap: $options.tap,
+    ref: "SpinePlayers"
   }, null, 8 /* PROPS */, ["selectedLanguage", "currentPlayer", "onTap"])], 64 /* STABLE_FRAGMENT */);
 }
 
@@ -23684,7 +23777,9 @@ var _hoisted_5 = {
   id: "player-ton"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Используем v-show для скрытия и показа элементов в зависимости от currentPlayer "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, this.$route.name == 'power' && this.selectedLanguage == 'en']]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, this.$route.name == 'power' && this.selectedLanguage == 'ru']]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, this.$route.name == 'shield']]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, this.$route.name == 'finance']])]);
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Используем v-show для скрытия и показа элементов в зависимости от currentPlayer "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, this.$route.name == 'power' && this.selectedLanguage == 'en']]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, this.$route.name == 'power' && this.selectedLanguage == 'ru']]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, this.$route.name == 'shield']]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, this.$route.name == 'finance']]), _cache[0] || (_cache[0] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+    id: "player-level"
+  }, null, -1 /* HOISTED */))]);
 }
 
 /***/ }),
@@ -24480,7 +24575,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n#player-power, #player-power-ru, #player-shield, #player-ton {\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    height: 100%;  /* Высота на весь экран */\r\n    width: 100%;   /* Ширина на весь экран */\r\n    background-color: #000000; /* Черный фон */\r\n    position: relative;\r\n    /* z-index: -1; */\n}\n.spine-player{\r\n    width: 100%;\n}\r\n\r\n  /* Стиль для канваса */\ncanvas {\r\n    -o-object-fit: none;\r\n       object-fit: none;  /* Отменяем стандартное поведение object-fit */\r\n    transition: all 0.3s ease; /* Плавный переход при изменении размеров */\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.screen{\r\n        position: relative;\n}\n#player-power, #player-power-ru, #player-shield, #player-ton, #player-level {\r\n        display: flex;\r\n        justify-content: center;\r\n        align-items: center;\r\n        height: 100%;  /* Высота на весь экран */\r\n        width: 100%;   /* Ширина на весь экран */\r\n        background-color: #000000; /* Черный фон */\r\n        position: relative;\r\n        /* z-index: -1; */\n}\n#player-level {\r\n        position: absolute;\r\n        top: 0;\r\n        bottom: 0;\r\n        right: 0;\r\n        left: 0;\r\n        z-index: -2;\r\n        background-color: transparent;\n}\n.spine-player{\r\n        width: 100%;\n}\r\n\r\n    /* Стиль для канваса */\ncanvas {\r\n        -o-object-fit: none;\r\n           object-fit: none;  /* Отменяем стандартное поведение object-fit */\r\n        transition: all 0.3s ease; /* Плавный переход при изменении размеров */\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

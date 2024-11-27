@@ -5,6 +5,7 @@
         <div id="player-power-ru" v-show="this.$route.name == 'power' && this.selectedLanguage == 'ru'"></div>
         <div id="player-shield" v-show="this.$route.name == 'shield'"></div>
         <div id="player-ton" v-show="this.$route.name == 'finance'"></div>
+        <div id="player-level"></div>
     </div>
 </template>
 
@@ -12,7 +13,9 @@
 export default {
     data(){
         return{
-            language: 'ru'
+            language: 'ru',
+            showLvlUp: false,
+            lvlUpPlayer: {},
         }
     },
     props: {
@@ -266,6 +269,98 @@ export default {
 
                 }
             });
+
+
+
+
+            new spine.SpinePlayer("player-level", {
+                jsonUrl: '/animations/Animation_level/main_all.json',
+                atlasUrl: '/animations/Animation_level/main_all.atlas',
+                pngUrl: '/animations/Animation_level/main_all.png',
+                width: window.innerWidth,  // Исходная ширина
+                height: window.innerHeight, // Исходная высота
+                alpha: true,
+                backgroundColor: "#00000000",
+                showControls: false,
+                showLoading: false,
+                animation: "animation", // Начальная анимация
+                loop: false,
+                // Глобальная настройка viewport
+                // viewport: {
+                //     x: -378/2,         // Позиция по оси X
+                //     y: -656*2,         // Позиция по оси Y
+                //     width: 378*2,   // Ширина видимой области
+                //     height: 656*2,  // Высота видимой области
+                //     // padLeft: "30%", // Без отступов
+                //     // padRight: "30%",
+                //     // padTop: "-50%",
+                //     // padBottom: "-50%",
+                //     transitionTime: 0 // Отключаем плавные переходы
+                // },
+                viewport: {
+
+                    width: 378*2,         // Ширина текстуры из атласа
+                    height: 656*2,        // Высота текстуры из атласа
+                    transitionTime: 0,   // Без анимации переходов
+                    padLeft: "100%",
+                    padRight: "100%",
+                    padTop: "85%",
+                    padBottom: "100%",
+                },
+
+                success: (loadedPlayer) => {
+                    self.lvlUpPlayer = loadedPlayer;
+                    console.log("lvlUpAnimation loaded successfully");
+                    console.log(self.lvlUpPlayer);
+                    const playerContainer = document.getElementById("player-level");
+                    let isAnimating = false;
+                    playerContainer.addEventListener('click', function() {
+                        self.$emit('tap');
+                        // При клике запускаем анимацию "baloon_pump"
+                        if(!isAnimating){
+                            const clickAnimation = loadedPlayer.setAnimation("animation", false);
+                            clickAnimation.timeScale = 1.5;
+                            isAnimating = true;
+                        }
+                    });
+
+                    loadedPlayer.animationState.addListener({
+                        complete: function (trackEntry) {
+                        // Если анимация завершена, переключаемся на idle
+                        if (trackEntry.animation.name === 'animation') {
+                            // loadedPlayer.setAnimation("idle", true);
+                            isAnimating = false;
+                            self.hideLvlUpAnim();
+                        }
+                        }
+                    });
+
+                }
+            });
+        },
+        showLvlUpAnim(){
+            let self = this;
+            this.showLvlUp = true;
+            document.querySelector('#player-level').style.zIndex = "1";
+            
+            const clickAnimation = this.lvlUpPlayer.setAnimation("animation", false);
+            clickAnimation.timeScale = 1.5;
+
+
+
+
+            this.lvlUpPlayer.animationState.addListener({
+                complete: function (trackEntry) {
+                    // Если анимация завершена, переключаемся на idle
+                    if (trackEntry.animation.name === 'animation') {
+                            self.hideLvlUpAnim();
+                    }
+                    }
+            });
+        },
+        hideLvlUpAnim(){
+            this.showLvlUp = false;
+            document.querySelector('#player-level').style.zIndex = "-2";
         }
     }
 };
@@ -281,24 +376,36 @@ export default {
 </style>
 
 <style>
-#player-power, #player-power-ru, #player-shield, #player-ton {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;  /* Высота на весь экран */
-    width: 100%;   /* Ширина на весь экран */
-    background-color: #000000; /* Черный фон */
-    position: relative;
-    /* z-index: -1; */
-  }
+    .screen{
+        position: relative;
+    }
+    #player-power, #player-power-ru, #player-shield, #player-ton, #player-level {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;  /* Высота на весь экран */
+        width: 100%;   /* Ширина на весь экран */
+        background-color: #000000; /* Черный фон */
+        position: relative;
+        /* z-index: -1; */
+    }
+    #player-level {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        z-index: -2;
+        background-color: transparent;
+    }
 
-  .spine-player{
-    width: 100%;
-  }
+    .spine-player{
+        width: 100%;
+    }
 
-  /* Стиль для канваса */
-  canvas {
-    object-fit: none;  /* Отменяем стандартное поведение object-fit */
-    transition: all 0.3s ease; /* Плавный переход при изменении размеров */
-  }
+    /* Стиль для канваса */
+    canvas {
+        object-fit: none;  /* Отменяем стандартное поведение object-fit */
+        transition: all 0.3s ease; /* Плавный переход при изменении размеров */
+    }
 </style>
